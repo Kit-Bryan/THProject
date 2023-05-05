@@ -97,7 +97,7 @@ client.on("message", async (topic, message) => {
 
     // Write data into DB
     influx.writeMqttSubscribedData(MqttData);
-
+    
     // Only execute on every third mqtt message
     if (counter % 3 === 0) {
         // const data = await influx.queryInfluxData(queryTimeRange);

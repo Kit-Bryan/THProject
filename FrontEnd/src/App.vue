@@ -4,7 +4,7 @@ import SingleChart from "./components/SingleChart.vue"
 </script>
 
 <template>
-  <SingleChart />
+  <Chart />
 </template>
 
 <script>
