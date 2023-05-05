@@ -31,7 +31,7 @@ io.on("connection", (socket) => {
     console.log("A user connected");
     // Listen for new range
     socket.on("my-message", async (newRange) => {
-        console.log(`Time range is set to: ${newRange}`);
+        console.log(`(Socket trigger) Time range is set to: ${newRange}`);
         queryTimeRange = newRange;
     });
 });
@@ -45,7 +45,7 @@ app.get("/api", async (req: any, res: any) => {
     try {
         // Query data from influxdb
         let data = await influx.queryInfluxData(req.query.time ? req.query.time : queryTimeRange);
-        console.log(req.query.time, "time parameter")
+        console.log("Api time parameter:", req.query.time, )
         // Send queried data to the client as a response
         res.send(data);
     } catch (error: any) {

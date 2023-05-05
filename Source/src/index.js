@@ -66,7 +66,7 @@ io.on("connection", function (socket) {
     // Listen for new range
     socket.on("my-message", function (newRange) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            console.log("Time range is set to: ".concat(newRange));
+            console.log("(Socket trigger) Time range is set to: ".concat(newRange));
             queryTimeRange = newRange;
             return [2 /*return*/];
         });
@@ -85,7 +85,7 @@ app.get("/api", function (req, res) { return __awaiter(void 0, void 0, void 0, f
                 return [4 /*yield*/, influx.queryInfluxData(req.query.time ? req.query.time : queryTimeRange)];
             case 1:
                 data = _a.sent();
-                console.log(req.query.time, "time parameter");
+                console.log("Api time parameter:", req.query.time);
                 // Send queried data to the client as a response
                 res.send(data);
                 return [3 /*break*/, 3];
