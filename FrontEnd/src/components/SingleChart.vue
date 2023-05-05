@@ -130,11 +130,13 @@ export default {
     },
     // Execute this code when component is mounted/ when page is loaded
     async mounted() {
+        // If local storage has selected time range
         if (localStorage.getItem("selectedTime")) {
             console.log("Local storage is currently:", localStorage["selectedTime"]);
+            // Assign value from local storage to data property
             this.time = localStorage["selectedTime"];
         }
-        const ctx = document.getElementById("myChart");
+        const myChartInstance = document.getElementById("myChart");
         await this.getData(null, localStorage["selectedTime"]);
 
         let chartData = {
@@ -214,7 +216,7 @@ export default {
             ],
         };
 
-        let chart = new Chart(ctx, {
+        let chart = new Chart(myChartInstance, {
             type: "line",
             data: chartData,
             options: {

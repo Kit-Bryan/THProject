@@ -164,8 +164,10 @@ export default {
     },
     // Execute this code when component is mounted/ when page is loaded
     async mounted() {
+        // If local storage has selected time range
         if (localStorage.getItem("selectedTime")) {
             console.log("Local storage is currently:", localStorage["selectedTime"]);
+            // Assign value from local storage to data property
             this.time = localStorage["selectedTime"];
         }
         const temperatureChartInstance = document.getElementById("temperatureChart");

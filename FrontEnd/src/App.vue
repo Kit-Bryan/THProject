@@ -1,10 +1,10 @@
 <script setup>
 import Chart from "./components/ChartComponent.vue"
-import draft from "./components/draft.vue"
+import SingleChart from "./components/SingleChart.vue"
 </script>
 
 <template>
-  <Chart />
+  <SingleChart />
 </template>
 
 <script>
