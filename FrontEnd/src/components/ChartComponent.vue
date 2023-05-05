@@ -3,19 +3,19 @@
         <h1 @click="displayHello">{{ msg }}</h1>
         <div class="panel-container">
             <div class="dummy-1 dummy-panel">
-                <h2>dummy-1</h2>
-                <p>{{ dt1 }}</p>
-                <p>{{ dh1 }}</p>
+                <h2>Dummy-1</h2>
+                <p>{{ dt1 }} °C</p>
+                <p>{{ dh1 }} %</p>
             </div>
             <div class="dummy-2 dummy-panel">
-                <h2>dummy-2</h2>
-                <p>{{ dt2 }}</p>
-                <p>{{ dh2 }}</p>
+                <h2>Dummy-2</h2>
+                <p>{{ dt2 }} °C</p>
+                <p>{{ dh2 }} %</p>
             </div>
             <div class="dummy-3 dummy-panel">
-                <h2>dummy-3</h2>
-                <p>{{ dt3 }}</p>
-                <p>{{ dh3 }}</p>
+                <h2>Dummy-3</h2>
+                <p>{{ dt3 }} °C</p>
+                <p>{{ dh3 }} %</p>
             </div>
         </div>
         <select v-model="time">
@@ -26,9 +26,13 @@
             <option value="5hr">5 hours</option>
             <option value="24hr">24 hours</option>
         </select>
-        <h3>Temperature</h3>
+        <div class="chart-title">
+            <h3>Temperature</h3>
+        </div>
         <canvas id="temperatureChart" width="2500" height="1200"></canvas>
-        <h3>Humidity</h3>
+        <div class="chart-title">
+            <h3>Humidity</h3>
+        </div>
         <canvas id="humidityChart" width="2500" height="1200"></canvas>
     </div>
 </template>
@@ -55,12 +59,12 @@ export default {
             tempParsedData: null,
             humidityParsedData: null,
             time: selectedTime,
-            dt1: "celcius",
-            dh1: "humidity",
-            dt2: "celcius",
-            dh2: "humidity",
-            dt3: "celcius",
-            dh3: "humidity",
+            dt1: "-",
+            dh1: "-",
+            dt2: "-",
+            dh2: "-",
+            dt3: "-",
+            dh3: "-",
         };
     },
     watch: {
@@ -98,6 +102,9 @@ export default {
             chartInstance.data.datasets.forEach((ds) => {
                 let ambientType = ds.label.split("-")[3];
                 if (ambientType === "temperature") {
+                    // console.log(this.tempParsedData.slice(-1)[0].data["dummy-temp-1-temperature"])
+                    // console.log(this.tempParsedData.slice(-1)[0].data["dummy-temp-2-temperature"])
+                    // console.log(this.tempParsedData.slice(-1)[0].data["dummy-temp-3-temperature"])
                     ds.data = this.tempParsedData;
                 } else if (ambientType === "humidity") {
                     ds.data = this.humidityParsedData;
@@ -300,8 +307,18 @@ export default {
             // Update your UI with the new data
             await this.getData();
 
-            this.updateChart(temperatureChart)
-            this.updateChart(humidityChart)
+            this.updateChart(temperatureChart);
+            this.updateChart(humidityChart);
+
+            console.log(temperatureChart.data.datasets[0].data.slice(-1)[0].data["dummy-temp-1-temperature"]);
+            console.log(temperatureChart.data.datasets[0].data.slice(-1)[0].data["dummy-temp-2-temperature"]);
+            console.log(temperatureChart.data.datasets[0].data.slice(-1)[0].data["dummy-temp-3-temperature"]);
+            this.dt1 = temperatureChart.data.datasets[0].data.slice(-1)[0].data["dummy-temp-1-temperature"].toFixed(2);
+            this.dt2 = temperatureChart.data.datasets[0].data.slice(-1)[0].data["dummy-temp-2-temperature"].toFixed(2);
+            this.dt3 = temperatureChart.data.datasets[0].data.slice(-1)[0].data["dummy-temp-3-temperature"].toFixed(2);
+            this.dh1 = humidityChart.data.datasets[0].data.slice(-1)[0].data["dummy-temp-1-humidity"].toFixed(2);
+            this.dh2 = humidityChart.data.datasets[0].data.slice(-1)[0].data["dummy-temp-2-humidity"].toFixed(2);
+            this.dh3 = humidityChart.data.datasets[0].data.slice(-1)[0].data["dummy-temp-3-humidity"].toFixed(2);
             // Log latest data
             console.log(temperatureChartData.datasets, "TEMP second change (socket)", `Time is ${this.time}`);
             console.log(temperatureChartData.datasets, "HUMID second change (socket)", `Time is ${this.time}`);

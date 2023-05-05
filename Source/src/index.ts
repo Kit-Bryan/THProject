@@ -105,6 +105,4 @@ client.on("message", async (topic, message) => {
         // Send data to all connected clients
         io.emit("mqtt-triggered-message");
     }
-
-    
 });

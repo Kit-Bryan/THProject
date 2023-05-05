@@ -75,9 +75,9 @@ select {
     align-self: end;
 }
 .chart-app {
-  position: relative;
-  display: flex;
-  flex-direction: column;
+    position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .panel-container {
@@ -93,6 +93,24 @@ select {
     width: 200px;
     padding: 20px;
     text-align: center;
+    border-radius: 2rem;
+}
+
+.dummy-panel p {
+    font-size: 18px;
+}
+
+.chart-title {
+    border: 2px solid black;
+    max-width: fit-content;
+    padding-inline: 10px;
+    text-align: center;
+}
+.chart-title h3 {
+    margin: 0;
+}
+.chart-title:nth-of-type(3){
+    margin-top: 3em;
 }
 
 #app {
