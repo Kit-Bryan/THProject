@@ -1,7 +1,8 @@
 <template>
     <div class="chart-app">
         <h1 @click="displayHello">{{ msg }}</h1>
-        <div class="panel-container">
+        <button class="toggle-panel-button" @click="isShowPanel = !isShowPanel ">{{isShowPanel === true ? "Hide Panel": "Show Panel"}}</button>
+        <div v-if="isShowPanel" class="panel-container">
             <div class="dummy-1 dummy-panel">
                 <h2>Dummy-1</h2>
                 <p>{{ dt1 }} °C</p>
@@ -18,7 +19,7 @@
                 <p>{{ dh3 }} %</p>
             </div>
         </div>
-        <select v-model="time">
+        <select v-model="time" class="dropdown-time">
             <option value="5m">5 minutes</option>
             <option value="15m">15 minutes</option>
             <option value="30m">30 minutes</option>
@@ -26,14 +27,14 @@
             <option value="5hr">5 hours</option>
             <option value="24hr">24 hours</option>
         </select>
-        <div class="chart-title">
+        <div class="chart-container">
             <h3>Temperature</h3>
+            <canvas class="temperature-chart" id="temperatureChart" width="2500" height="1200"></canvas>
         </div>
-        <canvas id="temperatureChart" width="2500" height="1200"></canvas>
-        <div class="chart-title">
+        <div class="chart-container">
             <h3>Humidity</h3>
+            <canvas id="humidityChart" width="2500" height="1200"></canvas>
         </div>
-        <canvas id="humidityChart" width="2500" height="1200"></canvas>
     </div>
 </template>
 
@@ -54,7 +55,7 @@ socket.emit("my-message", selectedTime);
 export default {
     data() {
         return {
-            msg: "Chart",
+            msg: "Temperature/Humidity Chart",
             parsedData: null,
             tempParsedData: null,
             humidityParsedData: null,
@@ -65,6 +66,8 @@ export default {
             dh2: "-",
             dt3: "-",
             dh3: "-",
+            age: "0",
+            isShowPanel: true,
         };
     },
     watch: {
@@ -166,7 +169,12 @@ export default {
             }
         },
         displayHello() {
-            this.dt1 = "HELLO";
+            this.dt1 = "Wait";
+            this.dh1 = "Wait";
+            this.dt2 = "Wait";
+            this.dh2 = "Wait";
+            this.dt3 = "Wait";
+            this.dh3 = "Wait";
         },
     },
     // Execute this code when component is mounted/ when page is loaded
@@ -198,8 +206,8 @@ export default {
                 {
                     label: "dummy-temp-2-temperature",
                     data: this.tempParsedData,
-                    backgroundColor: "rgba(207, 249, 0, 0.2)",
-                    borderColor: "rgba(207, 249, 0, 1)",
+                    backgroundColor: "rgba(144, 249, 195, 0.2)",
+                    borderColor: "rgba(144, 249, 195, 1)",
                     tension: 0,
                     parsing: {
                         xAxisKey: "time",
@@ -235,8 +243,8 @@ export default {
                 {
                     label: "dummy-temp-2-humidity",
                     data: this.humidityParsedData,
-                    backgroundColor: "rgba(207, 249, 0, 0.2)",
-                    borderColor: "rgba(207, 249, 0, 1)",
+                    backgroundColor: "rgba(144, 249, 195, 0.2)",
+                    borderColor: "rgba(144, 249, 195, 1)",
                     tension: 0,
                     parsing: {
                         xAxisKey: "time",
@@ -276,6 +284,21 @@ export default {
                     },
                 },
             },
+            plugins: [
+                {
+                    beforeInit(chart) {
+                        // Get a reference to the original fit function
+                        const originalFit = chart.legend.fit;
+                        // Override the fit function
+                        chart.legend.fit = function fit() {
+                            // Call the original function and bind scope in order to use `this` correctly inside it
+                            originalFit.bind(chart.legend)();
+                            // Change the height as suggested in other answers
+                            this.height += 25;
+                        };
+                    },
+                },
+            ],
         });
 
         let humidityChart = new Chart(humidityChartInstance, {
@@ -297,6 +320,21 @@ export default {
                     },
                 },
             },
+            plugins: [
+                {
+                    beforeInit(chart) {
+                        // Get a reference to the original fit function
+                        const originalFit = chart.legend.fit;
+                        // Override the fit function
+                        chart.legend.fit = function fit() {
+                            // Call the original function and bind scope in order to use `this` correctly inside it
+                            originalFit.bind(chart.legend)();
+                            // Change the height as suggested in other answers
+                            this.height += 25;
+                        };
+                    },
+                },
+            ],
         });
 
         console.log(temperatureChartData, "TEMP first change(onMounted)", `Time is ${this.time}`);
@@ -310,15 +348,14 @@ export default {
             this.updateChart(temperatureChart);
             this.updateChart(humidityChart);
 
-            console.log(temperatureChart.data.datasets[0].data.slice(-1)[0].data["dummy-temp-1-temperature"]);
-            console.log(temperatureChart.data.datasets[0].data.slice(-1)[0].data["dummy-temp-2-temperature"]);
-            console.log(temperatureChart.data.datasets[0].data.slice(-1)[0].data["dummy-temp-3-temperature"]);
+            // Update panels with realtime  data
             this.dt1 = temperatureChart.data.datasets[0].data.slice(-1)[0].data["dummy-temp-1-temperature"].toFixed(2);
             this.dt2 = temperatureChart.data.datasets[0].data.slice(-1)[0].data["dummy-temp-2-temperature"].toFixed(2);
             this.dt3 = temperatureChart.data.datasets[0].data.slice(-1)[0].data["dummy-temp-3-temperature"].toFixed(2);
             this.dh1 = humidityChart.data.datasets[0].data.slice(-1)[0].data["dummy-temp-1-humidity"].toFixed(2);
             this.dh2 = humidityChart.data.datasets[0].data.slice(-1)[0].data["dummy-temp-2-humidity"].toFixed(2);
             this.dh3 = humidityChart.data.datasets[0].data.slice(-1)[0].data["dummy-temp-3-humidity"].toFixed(2);
+
             // Log latest data
             console.log(temperatureChartData.datasets, "TEMP second change (socket)", `Time is ${this.time}`);
             console.log(temperatureChartData.datasets, "HUMID second change (socket)", `Time is ${this.time}`);
