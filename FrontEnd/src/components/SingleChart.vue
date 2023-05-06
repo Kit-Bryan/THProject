@@ -94,7 +94,7 @@ export default {
             // Manually update chart dataset
             this.updateChart(chartInstance);
 
-            console.log(chart.data.datasets, "Temp/Humid from watch");
+            console.log(chartInstance.data.datasets, "Temp/Humid from watch");
         },
     },
     methods: {
@@ -298,6 +298,11 @@ export default {
             console.log(chartData.datasets, "second change (socket)", `Time is ${this.time}`);
 
         });
+    },
+    // Clean up side effects
+    unmounted() {
+        socket.removeAllListeners("mqtt-triggered-message")
+        console.log("Closing connection to socket Server");
     },
 };
 </script>

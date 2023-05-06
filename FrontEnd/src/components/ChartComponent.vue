@@ -358,5 +358,10 @@ export default {
             console.log(temperatureChartData.datasets, "HUMID second change (socket)", `Time is ${this.time}`);
         });
     },
+    // Clean up side effects
+    unmounted() {
+        socket.removeAllListeners("mqtt-triggered-message")
+        console.log("Closing connection to socket Server");
+    },
 };
 </script>
