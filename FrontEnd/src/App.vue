@@ -4,9 +4,11 @@ import SingleChart from "./components/SingleChart.vue";
 </script>
 
 <template>
-    <h2 @click="age++" class="counter">{{ age }}</h2>
-    <h3></h3>
-    <Chart />
+    <button @click="toggleThis = !toggleThis">Toggle chart format</button>
+    <div >
+      <Chart v-if="toggleThis"/>
+      <SingleChart v-else/>
+    </div>
 </template>
 
 <script>
@@ -15,8 +17,8 @@ export default {
     components: { Chart },
     data() {
       return {
-        age : 0,
-        
+        toggleThis: true,
+
       }
     },
 };

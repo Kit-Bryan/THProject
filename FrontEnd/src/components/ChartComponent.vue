@@ -1,24 +1,29 @@
 <template>
     <div class="chart-app">
-        <h1 @click="displayHello">{{ msg }}</h1>
-        <button class="toggle-panel-button" @click="isShowPanel = !isShowPanel ">{{isShowPanel === true ? "Hide Panel": "Show Panel"}}</button>
-        <div v-if="isShowPanel" class="panel-container">
-            <div class="dummy-1 dummy-panel">
-                <h2>Dummy-1</h2>
-                <p>{{ dt1 }} °C</p>
-                <p>{{ dh1 }} %</p>
+        <h1 @click="displayHello($event, 5)">{{ msg }}</h1>
+        <button class="toggle-panel-button" @click="isShowPanel = !isShowPanel">
+            {{ isShowPanel ? "Hide Panels" : "Show Panels" }}
+        </button>
+        <Transition name="panel-slide-fade">
+            <div v-show="isShowPanel" class="panel-container">
+                <div @dblclick="displayHello" class="dummy-1 dummy-panel">
+                    <h2>Dummy-1</h2>
+                    <p>{{ dt1 }} °C</p>
+                    <p>{{ dh1 }} %</p>
+                </div>
+                <div @dblclick="displayHello" class="dummy-2 dummy-panel">
+                    <h2>Dummy-2</h2>
+                    <p>{{ dt2 }} °C</p>
+                    <p>{{ dh2 }} %</p>
+                </div>
+                <div class="dummy-3 dummy-panel">
+                    <h2>Dummy-3</h2>
+                    <p>{{ dt3 }} °C</p>
+                    <p>{{ dh3 }} %</p>
+                </div>
             </div>
-            <div class="dummy-2 dummy-panel">
-                <h2>Dummy-2</h2>
-                <p>{{ dt2 }} °C</p>
-                <p>{{ dh2 }} %</p>
-            </div>
-            <div class="dummy-3 dummy-panel">
-                <h2>Dummy-3</h2>
-                <p>{{ dt3 }} °C</p>
-                <p>{{ dh3 }} %</p>
-            </div>
-        </div>
+        </Transition>
+
         <select v-model="time" class="dropdown-time">
             <option value="5m">5 minutes</option>
             <option value="15m">15 minutes</option>
@@ -28,11 +33,11 @@
             <option value="24hr">24 hours</option>
         </select>
         <div class="chart-container">
-            <h3>Temperature</h3>
+            <h2>Temperature</h2>
             <canvas class="temperature-chart" id="temperatureChart" width="2500" height="1200"></canvas>
         </div>
-        <div class="chart-container">
-            <h3>Humidity</h3>
+        <div class="chart-container chart-humidity">
+            <h2>Humidity</h2>
             <canvas id="humidityChart" width="2500" height="1200"></canvas>
         </div>
     </div>
@@ -56,7 +61,6 @@ export default {
     data() {
         return {
             msg: "Temperature/Humidity Chart",
-            parsedData: null,
             tempParsedData: null,
             humidityParsedData: null,
             time: selectedTime,
@@ -66,34 +70,35 @@ export default {
             dh2: "-",
             dt3: "-",
             dh3: "-",
-            age: "0",
             isShowPanel: true,
         };
     },
     watch: {
         async time(newTime, oldTime) {
+            // Tell backend the new time range
+            socket.emit("my-message", newTime);
+
+            // Store the selected time in local storage
+            localStorage.setItem("selectedTime", this.time);
+
             // Retrieve chart instance
             let temperatureChartInstance = Chart.getChart("temperatureChart");
             let humidityChartInstance = Chart.getChart("humidityChart");
+
             // Update the 'time' data property to the new value passed in
             this.time = newTime;
-            // Store the selected time in local storage
-            localStorage.setItem("selectedTime", this.time);
 
             console.log(`Time changed from ${oldTime} to ${newTime}`);
 
             // Make an HTTP GET request to the backend API, passing in the new time value as a parameter
-            let { data } = await axios.get(`http://localhost:3000/api?time=${newTime}`);
+            // let { data } = await axios.get(`http://localhost:3000/api?time=${newTime}`);
 
             // Parse and assign data to data properties
-            await this.getData(data);
+            await this.getData(newTime);
 
             // Manually update chart dataset
             this.updateChart(temperatureChartInstance);
             this.updateChart(humidityChartInstance);
-
-            // Tell backend the new time range
-            socket.emit("my-message", newTime);
 
             console.log(temperatureChartInstance.data.datasets, "Temperature from watch");
             console.log(humidityChartInstance.data.datasets, "Humidity from watch");
@@ -105,9 +110,6 @@ export default {
             chartInstance.data.datasets.forEach((ds) => {
                 let ambientType = ds.label.split("-")[3];
                 if (ambientType === "temperature") {
-                    // console.log(this.tempParsedData.slice(-1)[0].data["dummy-temp-1-temperature"])
-                    // console.log(this.tempParsedData.slice(-1)[0].data["dummy-temp-2-temperature"])
-                    // console.log(this.tempParsedData.slice(-1)[0].data["dummy-temp-3-temperature"])
                     ds.data = this.tempParsedData;
                 } else if (ambientType === "humidity") {
                     ds.data = this.humidityParsedData;
@@ -115,22 +117,17 @@ export default {
             });
             chartInstance.update();
         },
-        async getData(realTimeData, selectedTime) {
+        async getData(selectedTime) {
             try {
                 let dataset;
-                // Use real time data
-                if (realTimeData) {
-                    dataset = realTimeData;
+                if (selectedTime) {
+                    // Call API with selected time
+                    let { data } = await axios.get(`http://localhost:3000/api?time=${selectedTime}`);
+                    dataset = data;
+                    console.log("Getting data of time:", selectedTime);
                 } else {
-                    if (selectedTime) {
-                        // Call API with selected time
-                        let { data } = await axios.get(`http://localhost:3000/api?time=${selectedTime}`);
-                        dataset = data;
-                        console.log("Getting data of time:", selectedTime);
-                    } else {
-                        let { data } = await axios.get("http://localhost:3000/api");
-                        dataset = data;
-                    }
+                    let { data } = await axios.get("http://localhost:3000/api");
+                    dataset = data;
                 }
                 // Create data stores for population
                 const temperatureResult = {};
@@ -168,13 +165,11 @@ export default {
                 console.error(error);
             }
         },
-        displayHello() {
-            this.dt1 = "Wait";
-            this.dh1 = "Wait";
-            this.dt2 = "Wait";
-            this.dh2 = "Wait";
-            this.dt3 = "Wait";
-            this.dh3 = "Wait";
+        displayHello(e, msg) {
+            console.log(e, e.type);
+            if (msg) {
+                console.log(msg);
+            }
         },
     },
     // Execute this code when component is mounted/ when page is loaded
@@ -188,7 +183,8 @@ export default {
         const temperatureChartInstance = document.getElementById("temperatureChart");
         const humidityChartInstance = document.getElementById("humidityChart");
 
-        await this.getData(null, localStorage["selectedTime"]);
+        // Get first render set of data
+        await this.getData(localStorage["selectedTime"]);
 
         let temperatureChartData = {
             datasets: [
@@ -340,11 +336,12 @@ export default {
         console.log(temperatureChartData, "TEMP first change(onMounted)", `Time is ${this.time}`);
         console.log(humidityChartData, "HUMID first change(onMounted)", `Time is ${this.time}`);
 
-        // Listen for "mqtt-message" events from the server, trigger cb func everytime
+        // Listen for "mqtt-triggered-message" events from the server, trigger cb function
         socket.on("mqtt-triggered-message", async () => {
             // Update your UI with the new data
             await this.getData();
 
+            // Update chart with the latest values
             this.updateChart(temperatureChart);
             this.updateChart(humidityChart);
 
