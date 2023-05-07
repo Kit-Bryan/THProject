@@ -1,4 +1,7 @@
 <template>
+    <button class="toggle-panel-button" @click="isShowPanel = !isShowPanel">
+        {{ isShowPanel ? "Hide Panels" : "Show Panels" }}
+    </button>
     <Transition name="panel-slide-fade">
         <div v-show="isShowPanel" class="panel-container">
             <div class="dummy-1 dummy-panel">
@@ -18,22 +21,13 @@
             </div>
         </div>
     </Transition>
-    <button class="toggle-panel-button" @click="isShowPanel = !isShowPanel">
-        {{ isShowPanel ? "Hide Panels" : "Show Panels" }}
-    </button>
 </template>
 
 <script>
 export default {
-    props: {},
+    props: ["dt1", "dt2", "dt3", "dh1", "dh2", "dh3"],
     data() {
         return {
-            dt1: "-",
-            dh1: "-",
-            dt2: "-",
-            dh2: "-",
-            dt3: "-",
-            dh3: "-",
             isShowPanel: true,
         };
     },

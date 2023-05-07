@@ -1,7 +1,9 @@
 <template>
     <div class="chart-app">
         <h1>{{ msg }}</h1>
-        <button class="toggle-panel-button" @click="isShowPanel = !isShowPanel">
+        <RealTimePanels :dt1="dt1" :dt2="dt2" :dt3="dt3" :dh1="dh1" :dh2="dh2" :dh3="dh3" />
+
+        <!-- <button class="toggle-panel-button" @click="isShowPanel = !isShowPanel">
             {{ isShowPanel ? "Hide Panels" : "Show Panels" }}
         </button>
 
@@ -23,7 +25,7 @@
                     <p>{{ dh3 }} %</p>
                 </div>
             </div>
-        </Transition>
+        </Transition> -->
 
         <select v-model="time" class="dropdown-time">
             <option value="5m">5 minutes</option>
