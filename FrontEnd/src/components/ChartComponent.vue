@@ -1,17 +1,17 @@
 <template>
     <div class="chart-app">
-        <h1 @click="displayHello($event, 5)">{{ msg }}</h1>
+        <h1>{{ msg }}</h1>
         <button class="toggle-panel-button" @click="isShowPanel = !isShowPanel">
-            {{ isShowPanel ? "Hide Panels" : "Show Panels" }}
+           {{ isShowPanel ? "Hide Panels" : "Show Panels" }}
         </button>
         <Transition name="panel-slide-fade">
             <div v-show="isShowPanel" class="panel-container">
-                <div @dblclick="displayHello" class="dummy-1 dummy-panel">
+                <div class="dummy-1 dummy-panel">
                     <h2>Dummy-1</h2>
                     <p>{{ dt1 }} °C</p>
                     <p>{{ dh1 }} %</p>
                 </div>
-                <div @dblclick="displayHello" class="dummy-2 dummy-panel">
+                <div class="dummy-2 dummy-panel">
                     <h2>Dummy-2</h2>
                     <p>{{ dt2 }} °C</p>
                     <p>{{ dh2 }} %</p>
@@ -163,12 +163,6 @@ export default {
                 });
             } catch (error) {
                 console.error(error);
-            }
-        },
-        displayHello(e, msg) {
-            console.log(e, e.type);
-            if (msg) {
-                console.log(msg);
             }
         },
     },
@@ -360,7 +354,7 @@ export default {
     },
     // Clean up side effects
     unmounted() {
-        socket.removeAllListeners("mqtt-triggered-message")
+        socket.removeAllListeners("mqtt-triggered-message");
         console.log("Closing connection to socket Server");
     },
 };

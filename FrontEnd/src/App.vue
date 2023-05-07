@@ -4,22 +4,26 @@ import SingleChart from "./components/SingleChart.vue";
 </script>
 
 <template>
-    <button @click="toggleThis = !toggleThis">Toggle chart format</button>
-    <div >
-      <Chart v-if="toggleThis"/>
-      <SingleChart v-else/>
+    <button @click="isDoubleChart = !isDoubleChart" title="Toggle chart format">
+        <i class="fa-solid fa-arrows-rotate"></i>
+    </button>
+    <div>
+        <Chart v-if="isDoubleChart" />
+        <SingleChart v-else />
     </div>
 </template>
 
 <script>
 export default {
     name: "App",
-    components: { Chart },
+    components: {
+        Chart,
+        SingleChart,
+    },
     data() {
-      return {
-        toggleThis: true,
-
-      }
+        return {
+            isDoubleChart: true,
+        };
     },
 };
 </script>
