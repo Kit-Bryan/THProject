@@ -1,32 +1,6 @@
 <template>
     <div class="chart-app">
-        <h1>{{ msg }}</h1>
         <RealTimePanels :dt1="dt1" :dt2="dt2" :dt3="dt3" :dh1="dh1" :dh2="dh2" :dh3="dh3" />
-
-        <!-- <button class="toggle-panel-button" @click="isShowPanel = !isShowPanel">
-            {{ isShowPanel ? "Hide Panels" : "Show Panels" }}
-        </button>
-
-        <Transition name="panel-slide-fade">
-            <div v-show="isShowPanel" class="panel-container">
-                <div @dblclick="displayHello" class="dummy-1 dummy-panel">
-                    <h2>Dummy-1</h2>
-                    <p>{{ dt1 }} °C</p>
-                    <p>{{ dh1 }} %</p>
-                </div>
-                <div @dblclick="displayHello" class="dummy-2 dummy-panel">
-                    <h2>Dummy-2</h2>
-                    <p>{{ dt2 }} °C</p>
-                    <p>{{ dh2 }} %</p>
-                </div>
-                <div class="dummy-3 dummy-panel">
-                    <h2>Dummy-3</h2>
-                    <p>{{ dt3 }} °C</p>
-                    <p>{{ dh3 }} %</p>
-                </div>
-            </div>
-        </Transition> -->
-
         <select v-model="time" class="dropdown-time">
             <option value="5m">5 minutes</option>
             <option value="15m">15 minutes</option>
@@ -43,12 +17,15 @@
 </template>
 
 <script>
-// Import chartJS
+// Import RealTimePanels component from RealTimePanels.vue file
+import RealTimePanels from "./RealTimePanels.vue";
+// Import ChartJS library
 import Chart from "chart.js/auto";
-// Import axios
+// Import axios library
 import axios from "axios";
+// Import socket.io-client library
 import { io } from "socket.io-client";
-
+// Create a new socket connection to the server running at `localhost:3000`
 const socket = io("localhost:3000");
 
 // Retrieve selected time range if exist in local storage
@@ -57,9 +34,9 @@ let selectedTime = localStorage["selectedTime"] ? localStorage["selectedTime"] :
 socket.emit("my-message", selectedTime);
 
 export default {
+    components: { RealTimePanels },
     data() {
         return {
-            msg: "Temperature/Humidity Chart",
             parsedData: null,
             time: selectedTime,
             dt1: "-",
@@ -68,7 +45,6 @@ export default {
             dh2: "-",
             dt3: "-",
             dh3: "-",
-            isShowPanel: true,
         };
     },
     watch: {
@@ -86,9 +62,6 @@ export default {
             this.time = newTime;
 
             console.log(`Time changed from ${oldTime} to ${newTime}`);
-
-            // Make an HTTP GET request to the backend API, passing in the new time value as a parameter
-            // let { data } = await axios.get(`http://localhost:3000/api?time=${newTime}`);
 
             // Parse and assign data to data properties
             await this.getData(newTime);
@@ -111,7 +84,7 @@ export default {
             try {
                 let dataset;
                 if (selectedTime) {
-                    // Call API with selected time
+                    // Make an HTTP GET request to the backend API, passing in the new time value as a parameter
                     let { data } = await axios.get(`http://localhost:3000/api?time=${selectedTime}`);
                     dataset = data;
                     console.log("Getting data of time:", selectedTime);
@@ -289,21 +262,20 @@ export default {
             this.updateChart(chartInstance);
 
             // Update panels with realtime  data
-            this.dh1= chartInstance.data.datasets[0].data.slice(-1)[0].data["dummy-temp-1-humidity"].toFixed(2)
-            this.dh2= chartInstance.data.datasets[0].data.slice(-1)[0].data["dummy-temp-2-humidity"].toFixed(2)
-            this.dh3= chartInstance.data.datasets[0].data.slice(-1)[0].data["dummy-temp-3-humidity"].toFixed(2)
-            this.dt1= chartInstance.data.datasets[0].data.slice(-1)[0].data["dummy-temp-1-temperature"].toFixed(2)
-            this.dt2= chartInstance.data.datasets[0].data.slice(-1)[0].data["dummy-temp-2-temperature"].toFixed(2)
-            this.dt3= chartInstance.data.datasets[0].data.slice(-1)[0].data["dummy-temp-3-temperature"].toFixed(2)
+            this.dh1 = chartInstance.data.datasets[0].data.slice(-1)[0].data["dummy-temp-1-humidity"].toFixed(2);
+            this.dh2 = chartInstance.data.datasets[0].data.slice(-1)[0].data["dummy-temp-2-humidity"].toFixed(2);
+            this.dh3 = chartInstance.data.datasets[0].data.slice(-1)[0].data["dummy-temp-3-humidity"].toFixed(2);
+            this.dt1 = chartInstance.data.datasets[0].data.slice(-1)[0].data["dummy-temp-1-temperature"].toFixed(2);
+            this.dt2 = chartInstance.data.datasets[0].data.slice(-1)[0].data["dummy-temp-2-temperature"].toFixed(2);
+            this.dt3 = chartInstance.data.datasets[0].data.slice(-1)[0].data["dummy-temp-3-temperature"].toFixed(2);
 
             // Log latest data
             console.log(chartData.datasets, "second change (socket)", `Time is ${this.time}`);
-
         });
     },
     // Clean up side effects
     unmounted() {
-        socket.removeAllListeners("mqtt-triggered-message")
+        socket.removeAllListeners("mqtt-triggered-message");
         console.log("Closing connection to socket Server");
     },
 };

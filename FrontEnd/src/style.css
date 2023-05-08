@@ -56,6 +56,27 @@ select {
     text-align: center;
     align-self: end;
 }
+
+.toggle-chart-format-btn {
+    font-size: 18px;
+    padding: 6px;
+    padding-bottom: 4px;
+    border: 1px solid black;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.014) 0px 10px 15px -3px, rgba(0, 0, 0, 0.01) 0px 4px 6px -2px;
+}
+
+.toggle-chart-format-btn:hover {
+    transform: translateY(-1px);
+    outline: black solid 1px;
+
+}
+
+.toggle-chart-format-btn:active {
+    transform: translateY(2px);
+}
+
 .chart-app {
     position: relative;
     display: flex;

@@ -1,14 +1,15 @@
 <script setup>
-import Chart from "./components/ChartComponent.vue";
+import ChartComponent from "./components/ChartComponent.vue";
 import SingleChart from "./components/SingleChart.vue";
 </script>
 
 <template>
-    <button @click="isDoubleChart = !isDoubleChart" title="Toggle chart format">
+    <button @click="toggleIsDoubleChart" title="Toggle chart format" class="toggle-chart-format-btn">
         <i class="fa-solid fa-arrows-rotate"></i>
     </button>
+    <h1>Temperature/Humidity Chart</h1>
     <div>
-        <Chart v-if="isDoubleChart" />
+        <ChartComponent v-if="isDoubleChart" />
         <SingleChart v-else />
     </div>
 </template>
@@ -17,15 +18,28 @@ import SingleChart from "./components/SingleChart.vue";
 export default {
     name: "App",
     components: {
-        Chart,
+        ChartComponent,
         SingleChart,
     },
     data() {
         return {
-            isDoubleChart: true,
+            isDoubleChart: (localStorage["isDoubleChart"] === "true"),
         };
+    },
+    methods: {
+        toggleIsDoubleChart() {
+            this.isDoubleChart = !this.isDoubleChart;
+        },
+    },
+    watch: {
+        isDoubleChart(newBool, oldBool) {
+            localStorage.setItem("isDoubleChart", newBool);
+        },
+    },
+    mounted(){
     },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>
