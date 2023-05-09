@@ -288,7 +288,7 @@ export default {
                     },
                 },
             },
-            plugins: [
+            plugins: [ // Extra padding between chart and legend
                 {
                     beforeInit(chart) {
                         // Get a reference to the original fit function

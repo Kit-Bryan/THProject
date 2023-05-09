@@ -155,8 +155,8 @@ export default {
                 {
                     label: "dummy-temp-2-temperature",
                     data: this.parsedData,
-                    backgroundColor: "rgba(207, 249, 0, 0.2)",
-                    borderColor: "rgba(207, 249, 0, 1)",
+                    backgroundColor: "rgba(144, 249, 195, 0.2)",
+                    borderColor: "rgba(144, 249, 195, 1)",
                     tension: 0,
                     parsing: {
                         xAxisKey: "time",
@@ -167,8 +167,8 @@ export default {
                 {
                     label: "dummy-temp-2-humidity",
                     data: this.parsedData,
-                    backgroundColor: "rgba(207, 249, 0, 0.2)",
-                    borderColor: "rgba(207, 249, 0, 1)",
+                    backgroundColor: "rgba(144, 249, 195, 0.2)",
+                    borderColor: "rgba(144, 249, 195, 1)",
                     tension: 0,
                     parsing: {
                         xAxisKey: "time",
@@ -261,7 +261,7 @@ export default {
             // Update chart with the latest values
             this.updateChart(chartInstance);
 
-            // Update panels with realtime  data
+            // Update panels with realtime data
             this.dh1 = chartInstance.data.datasets[0].data.slice(-1)[0].data["dummy-temp-1-humidity"].toFixed(2);
             this.dh2 = chartInstance.data.datasets[0].data.slice(-1)[0].data["dummy-temp-2-humidity"].toFixed(2);
             this.dh3 = chartInstance.data.datasets[0].data.slice(-1)[0].data["dummy-temp-3-humidity"].toFixed(2);

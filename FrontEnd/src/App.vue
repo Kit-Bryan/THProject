@@ -23,7 +23,8 @@ export default {
     },
     data() {
         return {
-            isDoubleChart: (localStorage["isDoubleChart"] === "true"),
+            // Convert "true" to true if "true" exists in local storage
+            isDoubleChart: localStorage["isDoubleChart"] === "true",
         };
     },
     methods: {

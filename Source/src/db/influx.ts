@@ -34,6 +34,7 @@ export function writeMqttSubscribedData(data: MqttData): void {
             .timestamp(data.timestamp)
     );
 }
+
 export async function queryInfluxData(rangeReceived: string): Promise<any> {
     let range;
     let aggregateWindow;

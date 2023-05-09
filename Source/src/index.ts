@@ -45,7 +45,7 @@ app.get("/api", async (req: any, res: any) => {
     try {
         // Query data from influxdb
         let data = await influx.queryInfluxData(req.query.time ? req.query.time : queryTimeRange);
-        console.log("Api time parameter:", req.query.time, )
+        console.log("Api time parameter:", req.query.time)
         // Send queried data to the client as a response
         res.send(data);
     } catch (error: any) {
@@ -78,7 +78,7 @@ let counter: number = 0;
 // Listen for incoming messages from broker. Trigger callback function when message is received.
 client.on("message", async (topic, message) => {
     // Format data
-    let topicArray = topic.split("/");
+    let topicArray = topic.split("/"); //site-a/data/dummy-temp-1/ambient
     let messageObj = JSON.parse(message.toString());
     // Assign each values to individual variables
     let measurement = topicArray[3];
@@ -91,6 +91,13 @@ client.on("message", async (topic, message) => {
         humidity: humidity,
         timestamp: timestamp,
     };
+
+    // let MqttData = {
+    //     measurement: measurement,
+    //     tags: {deviceId},
+    //     fields: { temperature, humidity },
+    //     timestamp: timestamp,
+    // };
 
     counter++;
     console.log(`COUNTER : ${counter}`);
