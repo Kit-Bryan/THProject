@@ -1,9 +1,9 @@
 // Import InfluxDB functions
 import { InfluxDB, Point } from "@influxdata/influxdb-client"; //Point class is used to create new data points that can be written to an InfluxDB database.
 
-// Token
+// API Token from influx ("Grafana")
 const token =
-    "dMfrsT_3X671LJLbLS5U_G0k53sNpgMY2ZNBoetvmy4vhIy1Lve04GObPRbV7j-58BODwGnyUDXRVw2LxQDKLQ==";
+    "lk5Mga3pc_PE_yjwU86vUsfmP-HXE7iQhsHrqA2DOpaKVKcVsV6Mq3gWCW9foRwFacJqx4Rr0X5nsT8EQ49Kkw==";
 // URL
 const url = "http://localhost:8086";
 // Instantiate a client using InfluxDB class by establishing a connection

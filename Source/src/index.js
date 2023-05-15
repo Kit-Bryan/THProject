@@ -45,7 +45,7 @@ var socket_io_1 = require("socket.io");
 // Instantiate the express app
 var app = express();
 // Set the port
-var port = 3000;
+var port = 3009;
 // Define host
 var MQTT_HOST = "localhost";
 // Instantiate a MQTT client and connect to a broker (mosquitto)
@@ -122,6 +122,12 @@ client.on("message", function (topic, message) { return __awaiter(void 0, void 0
             humidity: humidity,
             timestamp: timestamp,
         };
+        // let MqttData = {
+        //     measurement: measurement,
+        //     tags: {deviceId},
+        //     fields: { temperature, humidity },
+        //     timestamp: timestamp,
+        // };
         counter++;
         console.log("COUNTER : ".concat(counter));
         // Write data into DB

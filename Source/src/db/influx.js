@@ -39,8 +39,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.queryInfluxData = exports.writeMqttSubscribedData = void 0;
 // Import InfluxDB functions
 var influxdb_client_1 = require("@influxdata/influxdb-client"); //Point class is used to create new data points that can be written to an InfluxDB database.
-// Token
-var token = "dMfrsT_3X671LJLbLS5U_G0k53sNpgMY2ZNBoetvmy4vhIy1Lve04GObPRbV7j-58BODwGnyUDXRVw2LxQDKLQ==";
+// API Token from influx ("Grafana")
+var token = "lk5Mga3pc_PE_yjwU86vUsfmP-HXE7iQhsHrqA2DOpaKVKcVsV6Mq3gWCW9foRwFacJqx4Rr0X5nsT8EQ49Kkw==";
 // URL
 var url = "http://localhost:8086";
 // Instantiate a client using InfluxDB class by establishing a connection

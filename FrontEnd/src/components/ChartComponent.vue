@@ -30,7 +30,7 @@ import axios from "axios";
 // Import socket.io-client library
 import { io } from "socket.io-client";
 // Create a new socket connection to the server running at `localhost:3000`
-const socket = io("localhost:3000");
+const socket = io("localhost:3009");
 // Retrieve selected time range if exist in local storage
 let selectedTime = localStorage["selectedTime"] ? localStorage["selectedTime"] : "30m";
 // Tell backend selected time range from local storage
@@ -100,11 +100,11 @@ export default {
                 let dataset;
                 if (selectedTime) {
                     // Make an HTTP GET request to the backend API, passing in the new time value as a parameter
-                    let { data } = await axios.get(`http://localhost:3000/api?time=${selectedTime}`);
+                    let { data } = await axios.get(`http://localhost:3009/api?time=${selectedTime}`);
                     dataset = data;
                     console.log("Getting data of time:", selectedTime);
                 } else {
-                    let { data } = await axios.get("http://localhost:3000/api");
+                    let { data } = await axios.get("http://localhost:3009/api");
                     dataset = data;
                 }
                 // Create data stores for population

@@ -8,7 +8,7 @@ import { Server } from "socket.io";
 // Instantiate the express app
 const app = express();
 // Set the port
-const port = 3000;
+const port = 3009;
 // Define host
 const MQTT_HOST = "localhost";
 // Instantiate a MQTT client and connect to a broker (mosquitto)
